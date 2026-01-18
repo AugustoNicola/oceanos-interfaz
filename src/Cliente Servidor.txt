@@ -1,0 +1,135 @@
+Cliente                                   Servidor
+--------------------------------------------------------
+>Iniciar partida
+                                        Devuelve estado inicial (descarte + mazo)
+Decidir acción de robo
+										Ejecutar acción de robo
+Decidir dúos
+										Ejecutar dúos
+Decidir cómo terminar turno
+										Ejecutar fin de turno
+										
+										<turno bot>
+										
+										Bot decide acción de robo
+										Ejecutar acción de robo
+										Devuelve estado luego de acción
+Continuar
+										Bot decide dúos
+										Ejecutar dúos
+										Devuelve estado luego de acción
+Continuar
+										Bot decide cómo terminar turno
+										Ejecutar fin de turno
+										
+										<si partida sigue, turno jugador>
+										
+										Devuelve estado
+
+Decidir acción de robo
+...
+
+
+
+!INIT
+!AR_robo  (decidirRobo de Jugador)
+J.robo
+!AR_duos (decidirDuos de Jugador)
+J.duos
+!AR_fin (decidirFin de Jugador)
+J.fin
+B1.robo
+!OK (decidirDuos de Bot1)
+B1.duos
+!OK (decidirFin de Bot1)
+B1.fin
+(acá no hay OK, en este decidirRobo de Bot2, porque el último movimiento fue un bot)
+B2.robo
+!OK (decidirDuos de Bot2)
+B2.duos
+!OK (decidirFin de Bot2)
+B2.fin
+!AR (decidirRobo de Jugador)
+J.robo
+
+
+
+!INIT
+{
+	"jugadores": [
+		"decisiones_cacheadas",
+		"puntosbot_mk2",
+		"puntosbot_mk1"
+	],
+	"posición_jugador_activo": 0
+}
+
+
+!AR_robo:
+{
+	"accion_robo_elegida": "mazo",
+	"carta_elegida": 0,
+	"pila_descarte_elegida": 1
+}
+o
+{
+	"accion_robo_elegida": "descarte",
+	"pila_descarte_robada": 1
+}
+
+
+!AR_duos:
+{
+	"acción_dúos_elegida": "no"
+}
+o
+{
+	"acción_dúos_elegida": "pez",
+	"cartas_jugadas": [
+		{"tipo": "PEZ", "color": "NEGRO"},
+		{"tipo": "PEZ", "color": "AMARILLO"}
+	]
+}
+o
+{
+	"acción_dúos_elegida": "barco",
+	"cartas_jugadas": [
+		{"tipo": "BARCO", "color": "NEGRO"},
+		{"tipo": "BARCO", "color": "AMARILLO"}
+	]
+}
+o
+{
+	"acción_dúos_elegida": "cangrejo",
+	"cartas_jugadas": [
+		{"tipo": "CANGREJO", "color": "NEGRO"},
+		{"tipo": "CANGREJO", "color": "AMARILLO"}
+	],
+	"pila_descarte_elegida": 1,
+	"carta_descarte_robada": 5
+}
+o
+{
+	"acción_dúos_elegida": "nadador_tiburón",
+	"cartas_jugadas": [
+		{"tipo": "NADADOR", "color": "NEGRO"},
+		{"tipo": "TIBURON", "color": "AMARILLO"}
+	],
+	"jugador_elegido": 2
+}
+
+!AR_fin:
+{
+	"acción_fin_elegida": "pasar"
+}
+o
+{
+	"acción_fin_elegida": "basta"
+}
+o
+{
+	"acción_fin_elegida": "última_chance"
+}
+
+!OK
+<no se espera body>
