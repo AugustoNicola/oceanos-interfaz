@@ -2,6 +2,7 @@ import { useState } from "react";
 import Carta from "../Carta/Carta";
 
 export default function Acciones({
+  índiceActivo=0,
   faseActual="FASE_ROBO",
   setFaseActual,
   estado = {},
@@ -59,7 +60,7 @@ export default function Acciones({
     if (cartasDúoElegidas.reduce((prev, curr) => (prev + curr)) != 2) { return; }
     
     // TODO: esto se setea la segunda vez!
-    let manoFiltrada = estado.estadosDeJugadores[0].mano.filter(filtroTipoDúo[tipoDúo]);
+    let manoFiltrada = estado.estadosDeJugadores[índiceActivo].mano.filter(filtroTipoDúo[tipoDúo]);
     
     let índicesElegidos = cartasDúoElegidas
       .map((elegido, índice) => elegido ? índice : null)
@@ -136,13 +137,13 @@ export default function Acciones({
   };
   
   const cartasVálidasParaNadadorTiburón = () => {
-    let manoFiltrada = estado.estadosDeJugadores[0].mano.filter(filtroTipoDúo[tipoDúo]);
+    let manoFiltrada = estado.estadosDeJugadores[índiceActivo].mano.filter(filtroTipoDúo[tipoDúo]);
     
     return manoFiltrada.some((carta, índice) => (cartasDúoElegidas[índice] && carta.tipo === "NADADOR")) && manoFiltrada.some((carta, índice) => (cartasDúoElegidas[índice] && carta.tipo === "TIBURÓN"))
   };
   
   const inicializarElegirCartasDúo = (tipo) => {
-    setCartasDúoElegidas(estado.estadosDeJugadores[0].mano.filter(filtroTipoDúo[tipo]).map(_ => false));
+    setCartasDúoElegidas(estado.estadosDeJugadores[índiceActivo].mano.filter(filtroTipoDúo[tipo]).map(_ => false));
   }
   
   return (
@@ -156,7 +157,7 @@ export default function Acciones({
       }
       
       {/* Avanzar (OK) */}
-      { estado != {} && estado.deQuienEsTurno !== 0 && faseActual !== "RONDA_TERMINADA" &&
+      { estado != {} && estado.deQuienEsTurno !== índiceActivo && faseActual !== "RONDA_TERMINADA" && faseActual !== "INICIAR_PARTIDA" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-gray-300 hover:bg-gray-400"
         onClick={onAvanzar} disabled={cargando}>
         {cargando ? "Cargando..." : "Avanzar"}
@@ -172,7 +173,7 @@ export default function Acciones({
       }
       
       {/* Robar del mazo */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "FASE_ROBO" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-yellow-300 hover:bg-yellow-400"
         onClick={() => {setFaseActual("ESPECIAL_ELEGIR_ROBO")}} disabled={cargando}>
         {cargando ? "Cargando..." : "Robar del mazo"}
@@ -180,7 +181,7 @@ export default function Acciones({
       }
       
       {/* Elegir opciones de robo */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "ESPECIAL_ELEGIR_ROBO" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "ESPECIAL_ELEGIR_ROBO" &&
       <div className="w-full text-xl font-bold py-2 rounded-md bg-gray-400">
         <p className="pb-2 text-center">Elegí qué carta querés llevarte y dónde descartar la otra</p>
         <div className="flex flex-row flex-nowrap justify-around items-center">
@@ -219,7 +220,7 @@ export default function Acciones({
       }
       
       {/* Robar del descarte izquierdo */}
-      { estado != {} && estado?.deQuienEsTurno === 0 && faseActual === "FASE_ROBO" &&
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-red-300 hover:bg-red-400"
         onClick={() => {onRobarDelDescarte(0)}} disabled={cargando}>
         {cargando ? "Cargando..." : "Robar del descarte izquierdo"}
@@ -227,7 +228,7 @@ export default function Acciones({
       }
       
       {/* Robar del descarte derecho */}
-      { estado != {} && estado?.deQuienEsTurno === 0 && faseActual === "FASE_ROBO" &&
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-red-300 hover:bg-red-400"
         onClick={() => {onRobarDelDescarte(1)}} disabled={cargando}>
         {cargando ? "Cargando..." : "Robar del descarte derecho"}
@@ -235,7 +236,7 @@ export default function Acciones({
       }
       
       {/* Jugar dúo de Peces */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[0].mano.reduce((prev, carta) => (prev + (carta.tipo === "PEZ")), 0) >= 2 && 
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[índiceActivo].mano.reduce((prev, carta) => (prev + (carta.tipo === "PEZ")), 0) >= 2 && 
       <button className="w-full text-xl font-bold py-2 rounded-md bg-green-300 hover:bg-green-400"
         onClick={() => {setFaseActual("ESPECIAL_ELEGIR_CARTAS_DÚO"); setTipoDúo("PECES"); inicializarElegirCartasDúo("PECES")}} disabled={cargando}>
         {cargando ? "Cargando..." : "Jugar dúo de peces"}
@@ -243,7 +244,7 @@ export default function Acciones({
       }
       
       {/* Jugar dúo de Barcos */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[0].mano.reduce((prev, carta) => (prev + (carta.tipo === "BARCO")), 0) >= 2 && 
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[índiceActivo].mano.reduce((prev, carta) => (prev + (carta.tipo === "BARCO")), 0) >= 2 && 
       <button className="w-full text-xl font-bold py-2 rounded-md bg-blue-300 hover:bg-blue-400"
         onClick={() => {setFaseActual("ESPECIAL_ELEGIR_CARTAS_DÚO"); setTipoDúo("BARCOS"); inicializarElegirCartasDúo("BARCOS")}} disabled={cargando}>
         {cargando ? "Cargando..." : "Jugar dúo de barcos"}
@@ -251,7 +252,7 @@ export default function Acciones({
       }
       
       {/* Jugar dúo de Cangrejos */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[0].mano.reduce((prev, carta) => (prev + (carta.tipo === "CANGREJO")), 0) >= 2 && 
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[índiceActivo].mano.reduce((prev, carta) => (prev + (carta.tipo === "CANGREJO")), 0) >= 2 && 
       <button className="w-full text-xl font-bold py-2 rounded-md bg-red-300 hover:bg-red-400"
         onClick={() => {setFaseActual("ESPECIAL_ELEGIR_CARTAS_DÚO"); setTipoDúo("CANGREJOS"); inicializarElegirCartasDúo("CANGREJOS")}} disabled={cargando}>
         {cargando ? "Cargando..." : "Jugar dúo de cangrejos"}
@@ -259,7 +260,7 @@ export default function Acciones({
       }
       
       {/* Jugar dúo de Nadador y Tiburón */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[0].mano.some(carta => (carta.tipo == "NADADOR")) && estado.estadosDeJugadores[0].mano.some(carta => (carta.tipo == "TIBURÓN")) &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && estado.estadosDeJugadores[índiceActivo].mano.some(carta => (carta.tipo == "NADADOR")) && estado.estadosDeJugadores[índiceActivo].mano.some(carta => (carta.tipo == "TIBURÓN")) &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-orange-300 hover:bg-orange-400"
         onClick={() => {setFaseActual("ESPECIAL_ELEGIR_CARTAS_DÚO"); setTipoDúo("NADADOR_Y_TIBURÓN"); inicializarElegirCartasDúo("NADADOR_Y_TIBURÓN")}} disabled={cargando}>
         {cargando ? "Cargando..." : "Jugar dúo de nadador y tiburón"}
@@ -267,12 +268,12 @@ export default function Acciones({
       }
       
       {/* Elegir cartas dúo */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "ESPECIAL_ELEGIR_CARTAS_DÚO" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "ESPECIAL_ELEGIR_CARTAS_DÚO" &&
       <div className={`w-full text-xl font-bold py-2 rounded-md flex flex-col justify-center items-center ${colorTipoDúo[tipoDúo]}`}>
         <p className="pb-2 text-center">Elegí qué cartas jugar en tu dúo</p>
         <div className="flex flex-row flex-nowrap justify-around gap-5">
           
-          {estado.estadosDeJugadores[0].mano.filter(filtroTipoDúo[tipoDúo]).map((carta, índice) => (
+          {estado.estadosDeJugadores[índiceActivo].mano.filter(filtroTipoDúo[tipoDúo]).map((carta, índice) => (
             <button
               key={índice}
               className={`${cartasDúoElegidas[índice] ? "brightness-100" : "brightness-75"}`}
@@ -295,7 +296,7 @@ export default function Acciones({
       }
       
       {/* Elegir pila de descarte para dúo cangrejos */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "ESPECIAL_CANGREJOS_ELEGIR_PILA" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "ESPECIAL_CANGREJOS_ELEGIR_PILA" &&
       <div className="w-full text-xl font-bold py-2 rounded-md bg-red-400">
         <p className="pb-2 text-center">Elegí qué pila de descarte querés robar</p>
         <div className="flex flex-row flex-nowrap justify-around items-center gap-8 px-8 pb-1">
@@ -318,7 +319,7 @@ export default function Acciones({
       }
       
       {/* Elegir carta del descarte para dúo cangrejos */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "ESPECIAL_CANGREJOS_ELEGIR_CARTA" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "ESPECIAL_CANGREJOS_ELEGIR_CARTA" &&
       <div className="w-full text-xl font-bold py-2 rounded-md bg-red-400">
         <p className="pb-2 text-center">Elegí qué carta querés llevarte</p>
         <div className="flex flex-row flex-wrap justify-around gap-5">
@@ -346,7 +347,7 @@ export default function Acciones({
       }
       
       {/* Elegir jugador a robar para dúo nadador y tiburón */}
-      { estado != {} && estado.deQuienEsTurno === 0 && faseActual === "ESPECIAL_NADADOR_Y_TIBURÓN_ELEGIR_JUGADOR" &&
+      { estado != {} && estado.deQuienEsTurno === índiceActivo && faseActual === "ESPECIAL_NADADOR_Y_TIBURÓN_ELEGIR_JUGADOR" &&
       <div className="w-full text-xl font-bold py-2 rounded-md bg-orange-400">
         <p className="pb-2 text-center">Elegí a qué jugador robar</p>
         <div className="flex flex-col flex-nowrap justify-around items-center gap-3 px-3 pb-1">
@@ -367,7 +368,7 @@ export default function Acciones({
       }
       
       {/* Pasar de turno */}
-      { estado != {} && estado?.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" &&
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-gray-300 hover:bg-gray-400"
         onClick={onPasarDeTurno} disabled={cargando}>
         {cargando ? "Cargando..." : "Pasar de turno"}
@@ -375,7 +376,7 @@ export default function Acciones({
       }
       
       {/* Decir ¡Basta! */}
-      { estado != {} && estado?.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && (!estado?.últimaChanceEnCurso) && estado?.puntajesRonda[0] >= 7 && 
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && (!estado?.últimaChanceEnCurso) && estado?.puntajesRonda[índiceActivo] >= 7 && 
       <button className="w-full text-xl font-bold py-2 rounded-md bg-blue-300 hover:bg-blue-400"
         onClick={onDecirBasta} disabled={cargando}>
         {cargando ? "Cargando..." : "¡Basta!"}
@@ -383,7 +384,7 @@ export default function Acciones({
       }
       
       {/* Decir ¡Última chance! */}
-      { estado != {} && estado?.deQuienEsTurno === 0 && faseActual === "FASE_DÚOS" && (!estado?.últimaChanceEnCurso) && estado?.puntajesRonda[0] >= 7 && 
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_DÚOS" && (!estado?.últimaChanceEnCurso) && estado?.puntajesRonda[índiceActivo] >= 7 && 
       <button className="w-full text-xl font-bold py-2 rounded-md bg-purple-300 hover:bg-purple-400"
         onClick={onDecirÚltimaChance} disabled={cargando}>
         {cargando ? "Cargando..." : "¡Última chance!"}

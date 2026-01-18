@@ -93,14 +93,16 @@ function App() {
   const [faseActual, setFaseActual] = useState("INICIAR_PARTIDA");
   const [idPartida, setIdPartida] = useState(null);
   
+  const índiceActivo = 2;
+  
   const handleInicializarPartida = async () => {
     setCargando(true);
     setError(null);
     
     try {
       const data = await llamarBackend("crear_partida", {
-        "jugadores": ["decisiones_cacheadas", "sirena_hater", "sirena_hater", "sirena_hater"],
-        "posición_jugador_activo": 0
+        "jugadores": ["sirena_hater", "sirena_hater", "decisiones_cacheadas", "sirena_hater"],
+        "posición_jugador_activo": índiceActivo
       });
       setEstado(data?.estado);
       setEntradasRegistro(entradas => [...entradas, {"acción": "ESPECIAL_COMIENZO_RONDA", "jugador_inicial": 0}]);
@@ -290,9 +292,9 @@ function App() {
       {/* Tablero */}
       <div className="basis-8/12 relative App bg-yellow-100 w-full h-full p-6 flex justify-center items-center">
         {/* Centro */}
-        <div className="bg-orange-200 flex flex-row flex-nowrap justify-around gap-7">
+        <div className="flex flex-row flex-nowrap justify-around gap-7">
           {/* Descarte */}
-          <div className="bg-orange-400 flex flex-row flex-nowrap justify-around gap-3">
+          <div className="flex flex-row flex-nowrap justify-around gap-3">
             <PilaDeDescarte cartas={estado.descarte[0]} />
             <PilaDeDescarte cartas={estado.descarte[1]} />
           </div>
@@ -353,6 +355,7 @@ function App() {
         <Registro
           entradasRegistro={entradasRegistro}
           faseActual={faseActual}
+          índiceActivo={índiceActivo}
           setFaseActual={setFaseActual}
           estado={estado}
           onInicializarPartida={handleInicializarPartida}

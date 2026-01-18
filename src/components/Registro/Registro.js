@@ -6,6 +6,7 @@ export default function Registro({
   entradasRegistro = [],
   faseActual = "INICIAR_PARTIDA",
   setFaseActual,
+  índiceActivo,
   estado = {},
   onInicializarPartida,
   onAvanzar,
@@ -36,6 +37,7 @@ export default function Registro({
       <Acciones
         faseActual={faseActual}
         setFaseActual={setFaseActual}
+        índiceActivo={índiceActivo}
         estado={estado}
         nombresJugadores={nombresJugadores}
         onInicializarPartida={onInicializarPartida}
