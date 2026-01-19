@@ -13,7 +13,7 @@ export default function Marcador({
 }) {
   
   return (
-    <div className="px-6 mb-3">
+    <div className="mb-3">
       {
         nombresJugadores.map( (nombre, indiceJugador) => (
           <div key={indiceJugador} className="flex flex-row justify-between text-3xl font-bold" >

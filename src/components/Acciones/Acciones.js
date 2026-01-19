@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Carta from "../Carta/Carta";
 
 export default function Acciones({
@@ -26,6 +26,48 @@ export default function Acciones({
   const [pilaDescarteDúoCangrejos, setPilaDescarteDúoCangrejos] = useState(null);
   const [cartaDúoCangrejosElegida, setCartaDúoCangrejosElegida] = useState(null);
   const [jugadoresARobar, setJugadoresARobar] = useState([]);
+  const [cantidadJugadores, setCantidadJugadores] = useState(2);
+  const [datosJugadores, setDatosJugadores] = useState([]);
+  const [perfilesDisponibles, setPerfilesDisponibles] = useState([]);
+  
+  const nombresDefaultJugadores = [
+    ["Jugador Rojo", "Jugador Azul"],
+    ["Jugador Rojo", "Jugador Verde", "Jugador Azul"],
+    ["Jugador Rojo", "Jugador Verde", "Jugador Azul", "Jugador Violeta"]
+  ];
+  const coloresJugadores = [
+    ["red", "blue"],
+    ["red", "green", "blue"],
+    ["red", "green", "blue", "purple"]
+  ];
+  
+  useEffect(() => {
+    fetch("http://localhost:8000/jugadores")
+      .then(res => res.json())
+      .then(data => setPerfilesDisponibles(data.jugadores));
+  }, []);
+
+  useEffect(() => {
+    setDatosJugadores(datosJugadoresPrevios => {
+      const nuevosDatosJugadores = [...datosJugadoresPrevios];
+      while (nuevosDatosJugadores.length < cantidadJugadores) {
+        nuevosDatosJugadores.push({ nombre: "", tipo: "" });
+      }
+      return nuevosDatosJugadores.slice(0, cantidadJugadores);
+    });
+  }, [cantidadJugadores]);
+
+  const actualizarPerfilJugador = (índice, campo, valor) => {
+    setDatosJugadores(previo => {
+      const nuevo = [...previo];
+      nuevo[índice] = { ...nuevo[índice], [campo]: valor };
+      return nuevo;
+    });
+  };
+
+  const formComplete =
+    datosJugadores.length === cantidadJugadores &&
+    datosJugadores.every(p => p.nombre.trim() !== "" && p.tipo !== "");
   
   const colorTipoDúo = {
     "PECES": "bg-green-400",
@@ -92,8 +134,8 @@ export default function Acciones({
         // paso de elección de jugador a robar
         setFaseActual("ESPECIAL_NADADOR_Y_TIBURÓN_ELEGIR_JUGADOR");
         const aux = [];
-        nombresJugadores.forEach((nombre, índice) => {
-          if (índice != índiceActivo) {aux.push(nombre);}
+        datosJugadores.forEach((datos, índice) => {
+          if (índice != índiceActivo) {aux.push(datos.nombre);}
         });
         setJugadoresARobar(aux);
         break;
@@ -153,11 +195,59 @@ export default function Acciones({
   return (
     <div className="w-full flex flex-col flex-nowrap gap-3 justify-start items-center border-t-2 border-gray-400 pt-4 mt-2">
       {/* Crear Partida */}
-      { faseActual === "INICIAR_PARTIDA" && 
-      <button className="w-full text-xl font-bold py-2 rounded-md bg-green-300 hover:bg-green-400"
-        onClick={onInicializarPartida} disabled={cargando}>
-        {cargando ? "Cargando..." : "Crear Partida"}
-      </button>
+      { faseActual === "INICIAR_PARTIDA" &&
+      
+      <div className="flex flex-col gap-4 w-full">
+        <label>
+          Cantidad de jugadores
+          <select
+            className="border p-2 ml-2"
+            value={cantidadJugadores}
+            onChange={e => setCantidadJugadores(Number(e.target.value))}
+          >
+            {[2, 3, 4].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </label>
+
+        {datosJugadores.map((jugador, índice) => (
+          <div key={índice} className="border rounded flex flex-row gap-2 flex justify-between flex-row flex-nowrap items-center">
+            <h3 className={`font-semibold w-32 text-${coloresJugadores[cantidadJugadores-2][índice]}-500`}>{nombresDefaultJugadores[cantidadJugadores-2][índice]}</h3>
+
+            <input
+              type="text"
+              placeholder="Escribí..."
+              value={jugador.nombre}
+              onChange={e => actualizarPerfilJugador(índice, "nombre", e.target.value)}
+              className={`border p-2 bg-${coloresJugadores[cantidadJugadores-2][índice]}-200`}
+            />
+
+            <select
+              value={jugador.tipo}
+              onChange={e => actualizarPerfilJugador(índice, "tipo", e.target.value)}
+              className={`border p-2 bg-${coloresJugadores[cantidadJugadores-2][índice]}-200`}
+            >
+              <option value="">-- Elegí --</option>
+              <option value="ACTIVO">Jugar por interfaz</option>
+              {perfilesDisponibles.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+          </div>
+        ))}
+        
+        
+        <button
+          className="w-full text-xl font-bold py-2 rounded-md bg-green-300 hover:bg-green-400 disabled:bg-green-100"
+          onClick={() => {
+            onInicializarPartida(datosJugadores)
+          }}
+          disabled={cargando || !formComplete}
+        >
+          {cargando ? "Cargando..." : "Crear Partida"}
+        </button>
+      </div>
       }
       
       {/* Avanzar (OK) */}
@@ -224,7 +314,7 @@ export default function Acciones({
       }
       
       {/* Robar del descarte izquierdo */}
-      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" &&
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" && estado.descarte[0].length > 0 &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-red-300 hover:bg-red-400"
         onClick={() => {onRobarDelDescarte(0)}} disabled={cargando}>
         {cargando ? "Cargando..." : "Robar del descarte izquierdo"}
@@ -232,7 +322,7 @@ export default function Acciones({
       }
       
       {/* Robar del descarte derecho */}
-      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" &&
+      { estado != {} && estado?.deQuienEsTurno === índiceActivo && faseActual === "FASE_ROBO" && estado.descarte[1].length > 0 &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-red-300 hover:bg-red-400"
         onClick={() => {onRobarDelDescarte(1)}} disabled={cargando}>
         {cargando ? "Cargando..." : "Robar del descarte derecho"}

@@ -25,7 +25,7 @@ export default function EntradaRegistro({
   if (data["jugador"] !== undefined) { colorEntrada = coloresEntradaJugadores[nombresJugadores.length - 2][data["jugador"]]; }
   let mostrarPuntajesRonda = false;
   
-  const mostrarInfoSensible = modoEspectador || (data["jugador"] === índiceActivo);
+  let mostrarInfoSensible = modoEspectador || (data["jugador"] === índiceActivo);
   
   switch (data["acción"]) {
     case "ROBO_DEL_MAZO":
@@ -47,6 +47,7 @@ export default function EntradaRegistro({
       textoEntrada += ` juega un dúo de cangrejos y roba del descarte ${data["parámetros"]["pilaDondeRobó"] === 0 ? "izquierdo" : "derecho"}${mostrarInfoSensible ? " una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""}.`
       break;
     case "DÚO_JUGAR_NADADOR_Y_TIBURON":
+      mostrarInfoSensible = mostrarInfoSensible || data["parámetros"]["jugadorRobado"] === índiceActivo;
       textoEntrada += ` juega un dúo de nadador y tiburón y le roba a ${nombresJugadores[data["parámetros"]["jugadorRobado"]]}${mostrarInfoSensible ? " una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""}.`
       break;
     case "FIN_PASAR_TURNO":

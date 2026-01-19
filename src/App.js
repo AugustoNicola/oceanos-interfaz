@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Marcador from './components/Marcador/Marcador';
 import Mano from './components/Mano/Mano';
@@ -9,8 +9,6 @@ import { llamarBackend } from './api/backend';
 import Registro from './components/Registro/Registro';
 
 function App() {
-  let modoEspectador = false;
-  let nombresJugadores = ["Rojo", "Verde", "Azul"];
   let estadoInicial = {
     mazo: [],
     descarte: [
@@ -87,23 +85,33 @@ function App() {
   //  deQuienEsTurno: 0
   //}
   
+  const [nombresJugadores, setNombresJugadores] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+  const [modoEspectador, setModoEspectador] = useState(true);
+  const [índiceActivo, setÍndiceActivo] = useState(null);
   const [estado, setEstado] = useState(estadoInicial);
   const [entradasRegistro, setEntradasRegistro] = useState([]);
   const [faseActual, setFaseActual] = useState("INICIAR_PARTIDA");
   const [idPartida, setIdPartida] = useState(null);
   
-  const índiceActivo = 1;
   
-  const handleInicializarPartida = async () => {
+  const handleInicializarPartida = async (datosJugadores) => {
     setCargando(true);
     setError(null);
     
+    setNombresJugadores(datosJugadores.map(jugador => jugador.nombre));
+    
+    const búsquedaÍndiceActivo = datosJugadores.findIndex(jugador => jugador.tipo === "ACTIVO");
+    if (búsquedaÍndiceActivo != -1) {
+      setÍndiceActivo(búsquedaÍndiceActivo);
+      setModoEspectador(false);
+    }
+    
     try {
       const data = await llamarBackend("crear_partida", {
-        "jugadores": ["sirena_hater", "decisiones_cacheadas", "puntosbot_mk2"],
-        "posición_jugador_activo": índiceActivo
+        "jugadores": datosJugadores.map(jugador => jugador.tipo === "ACTIVO" ? "decisiones_cacheadas" : jugador.tipo),
+        "posición_jugador_activo": búsquedaÍndiceActivo
       });
       setEstado(data?.estado);
       setEntradasRegistro(entradas => [...entradas, {"acción": "ESPECIAL_COMIENZO_RONDA", "jugador_inicial": 0}]);
@@ -153,14 +161,11 @@ function App() {
         "acción_robo_elegida": "descarte",
         "pila_descarte_robada": descarteElegido
       });
-      console.log(data);
       setEstado(data?.estado);
       if (data?.evento != null) {
-        console.log("1");
         setEntradasRegistro(entradas => [...entradas, data?.evento]);
       }
       if (data?.estado?.fase == "PARTIDA_TERMINADA") {
-        console.log("2");
         setEntradasRegistro(entradas => [...entradas, {"acción": "ESPECIAL_PARTIDA_TERMINADA", "jugador_ganador": estado?.puntajes.indexOf(Math.max(...estado?.puntajes)), "ganó_por_sirena": Math.max(...estado?.puntajes) === 999}]);
       }
       setFaseActual(data?.estado?.fase);
@@ -305,7 +310,7 @@ function App() {
         
         {/* Mano Jugador Abajo */}
         <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] bg-red-400'>
-          <Mano mano={estado.estadosDeJugadores[0].mano} oculta={!modoEspectador && índiceActivo != 0} />
+          <Mano mano={estado.estadosDeJugadores[0].mano} oculta={faseActual != "RONDA_TERMINADA" && faseActual != "PARTIDA_TERMINADA" && !modoEspectador && índiceActivo != 0} />
         </div>
         {/* ZonaDuos Jugador Abajo */}
         <div className='absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[600px] bg-red-200'>
@@ -316,7 +321,7 @@ function App() {
         
         {/* Mano Jugador Arriba */}
         <div className='absolute top-0 left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-400'>
-          <Mano mano={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].mano} oculta={!modoEspectador && índiceActivo != (estado.puntajes.length === 2 ? 1 : 2)} />
+          <Mano mano={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].mano} oculta={faseActual != "RONDA_TERMINADA" && faseActual != "PARTIDA_TERMINADA" && !modoEspectador && índiceActivo != (estado.puntajes.length === 2 ? 1 : 2)} />
         </div>
         {/* ZonaDuos Jugador Arriba */}
         <div className='absolute top-[18%] left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-200'>
@@ -327,7 +332,7 @@ function App() {
         {/* Mano Jugador Izquierda */}
         { estado.puntajes.length > 2 &&
         <div className='absolute top-1/2 left-[-18%] -translate-y-1/2 rotate-90 w-[600px] bg-green-400'>
-          <Mano mano={estado.estadosDeJugadores[1].mano} oculta={!modoEspectador && índiceActivo != 1} />
+          <Mano mano={estado.estadosDeJugadores[1].mano} oculta={faseActual != "RONDA_TERMINADA" && faseActual != "PARTIDA_TERMINADA" && !modoEspectador && índiceActivo != 1} />
         </div>
         }
         
@@ -341,7 +346,7 @@ function App() {
         {/* Mano Jugador Derecha */}
         { estado.puntajes.length === 4 &&
         <div className='absolute top-1/2 left-[70%] -translate-y-1/2 -rotate-90 w-[600px] bg-purple-400'>
-          <Mano mano={estado.estadosDeJugadores[3].mano} oculta={!modoEspectador && índiceActivo != 3} />
+          <Mano mano={estado.estadosDeJugadores[3].mano} oculta={faseActual != "RONDA_TERMINADA" && faseActual != "PARTIDA_TERMINADA" && !modoEspectador && índiceActivo != 3} />
         </div>
         }
         {/* ZonaDuos Jugador Derecha */}
@@ -355,10 +360,12 @@ function App() {
       {/* Sideboard */}
       <div className="bg-gray-200 basis-4/12 w-full h-full px-5 py-3 flex flex-col flex-1">
         {/* Marcador */}
+        {nombresJugadores.length > 0 &&
         <Marcador
           nombresJugadores={nombresJugadores}
           puntajes={estado.puntajes}
         />
+        }
         {/* Registro */}
         <Registro
           entradasRegistro={entradasRegistro}
