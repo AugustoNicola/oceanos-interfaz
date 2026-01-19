@@ -1,70 +1,15 @@
-# Getting Started with Create React App
+# oceanos-interfaz
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](public/partida.png)
 
-## Available Scripts
+## Qué es esto
 
-In the project directory, you can run:
+Esta herramienta te permite jugar y visualizar partidas del Océanos para mayor claridad a la hora de probar tu bot y entender su comportamiento. Se conecta a tu [servidor local del juego](https://github.com/AugustoNicola/oceanos-juego), y lo único que hace esta interfaz es mostrar en pantalla la partida que se está jugando en tu compu, además de darte una manera más cómoda de jugar.
 
-### `npm start`
+## Tutorial: ¿cómo uso esto?
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Instalar localmente el repositorio de [oceanos-juego](https://github.com/AugustoNicola/oceanos-juego) (ver instrucciones en el README.md de ahí)
+2. Iniciar el servidor local ejecutando `python -m uvicorn backend.main:app --reload --port 8321` desde la carpeta `src/`
+3. Abrir la interfaz desde el navegador: https://augustonicola.github.io/oceanos-interfaz/
+4. Desde la interfaz, seleccionar la cantidad de jugadores, sus nombres, y sus tipos de jugador (pueden ser cualquier bot que tengas localmente, además de la opción "Jugar por interfaz" para que las acciones de juego las tomes vos desde el navegador).
+5. ¡Listo! Ahora el navegador va a mostrar todo sobre la partida, y si estás jugando por interfaz vas a tener las acciones de juego disponibles a la derecha.
