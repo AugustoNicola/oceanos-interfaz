@@ -9,7 +9,9 @@ function textualizarCarta(carta) {
 
 export default function EntradaRegistro({
   data,
-  nombresJugadores
+  nombresJugadores,
+  índiceActivo,
+  modoEspectador,
 }) {
   
   const coloresEntradaJugadores = [
@@ -23,9 +25,11 @@ export default function EntradaRegistro({
   if (data["jugador"] !== undefined) { colorEntrada = coloresEntradaJugadores[nombresJugadores.length - 2][data["jugador"]]; }
   let mostrarPuntajesRonda = false;
   
+  const mostrarInfoSensible = modoEspectador || (data["jugador"] === índiceActivo);
+  
   switch (data["acción"]) {
     case "ROBO_DEL_MAZO":
-      textoEntrada += ` roba del mazo una ${textualizarCarta(data["parámetros"]["_cartaRobada"])} y descarta en el descarte ${data["parámetros"]["pilaDondeDescartó"] === 0 ? "izquierdo" : "derecho"} una ${textualizarCarta(data["parámetros"]["cartaDescartada"])}.`
+      textoEntrada += ` roba del mazo ${mostrarInfoSensible ? "una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""} y descarta en la pila ${data["parámetros"]["pilaDondeDescartó"] === 0 ? "izquierda" : "derecha"} una ${textualizarCarta(data["parámetros"]["cartaDescartada"])}.`
       break;
     case "ROBO_DEL_DESCARTE_0":
       textoEntrada += ` roba del descarte izquierdo una ${textualizarCarta(data["parámetros"]["cartaRobada"])}.`
@@ -34,16 +38,16 @@ export default function EntradaRegistro({
       textoEntrada += ` roba del descarte izquierdo una ${textualizarCarta(data["parámetros"]["cartaRobada"])}.`
       break;
     case "DÚO_JUGAR_PECES":
-      textoEntrada += ` juega un dúo de peces y roba del mazo una ${textualizarCarta(data["parámetros"]["_cartaRobada"])}.`
+      textoEntrada += ` juega un dúo de peces y roba del mazo ${mostrarInfoSensible ? "una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""}.`
       break;
     case "DÚO_JUGAR_BARCOS":
       textoEntrada += ` juega un dúo de barcos y juega un turno extra.`
       break;
     case "DÚO_JUGAR_CANGREJOS":
-      textoEntrada += ` juega un dúo de cangrejos y roba del descarte ${data["parámetros"]["pilaDondeRobó"] === 0 ? "izquierdo" : "derecho"} una ${textualizarCarta(data["parámetros"]["_cartaRobada"])}.`
+      textoEntrada += ` juega un dúo de cangrejos y roba del descarte ${data["parámetros"]["pilaDondeRobó"] === 0 ? "izquierdo" : "derecho"}${mostrarInfoSensible ? " una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""}.`
       break;
     case "DÚO_JUGAR_NADADOR_Y_TIBURON":
-      textoEntrada += ` juega un dúo de nadador y tiburón y le roba a ${nombresJugadores[data["parámetros"]["jugadorRobado"]]} una ${textualizarCarta(data["parámetros"]["_cartaRobada"])}.`
+      textoEntrada += ` juega un dúo de nadador y tiburón y le roba a ${nombresJugadores[data["parámetros"]["jugadorRobado"]]}${mostrarInfoSensible ? " una " + textualizarCarta(data["parámetros"]["_cartaRobada"]) : ""}.`
       break;
     case "FIN_PASAR_TURNO":
       switch (data["parámetros"]["estadoRonda"]) {

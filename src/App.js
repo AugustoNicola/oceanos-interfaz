@@ -9,6 +9,7 @@ import { llamarBackend } from './api/backend';
 import Registro from './components/Registro/Registro';
 
 function App() {
+  let modoEspectador = false;
   let nombresJugadores = ["Rojo", "Verde", "Azul"];
   let estadoInicial = {
     mazo: [],
@@ -304,7 +305,7 @@ function App() {
         
         {/* Mano Jugador Abajo */}
         <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] bg-red-400'>
-          <Mano mano={estado.estadosDeJugadores[0].mano} />
+          <Mano mano={estado.estadosDeJugadores[0].mano} oculta={!modoEspectador && índiceActivo != 0} />
         </div>
         {/* ZonaDuos Jugador Abajo */}
         <div className='absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[600px] bg-red-200'>
@@ -315,7 +316,7 @@ function App() {
         
         {/* Mano Jugador Arriba */}
         <div className='absolute top-0 left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-400'>
-          <Mano mano={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].mano} />
+          <Mano mano={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].mano} oculta={!modoEspectador && índiceActivo != (estado.puntajes.length === 2 ? 1 : 2)} />
         </div>
         {/* ZonaDuos Jugador Arriba */}
         <div className='absolute top-[18%] left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-200'>
@@ -326,7 +327,7 @@ function App() {
         {/* Mano Jugador Izquierda */}
         { estado.puntajes.length > 2 &&
         <div className='absolute top-1/2 left-[-18%] -translate-y-1/2 rotate-90 w-[600px] bg-green-400'>
-          <Mano mano={estado.estadosDeJugadores[1].mano} />
+          <Mano mano={estado.estadosDeJugadores[1].mano} oculta={!modoEspectador && índiceActivo != 1} />
         </div>
         }
         
@@ -340,7 +341,7 @@ function App() {
         {/* Mano Jugador Derecha */}
         { estado.puntajes.length === 4 &&
         <div className='absolute top-1/2 left-[70%] -translate-y-1/2 -rotate-90 w-[600px] bg-purple-400'>
-          <Mano mano={estado.estadosDeJugadores[3].mano} />
+          <Mano mano={estado.estadosDeJugadores[3].mano} oculta={!modoEspectador && índiceActivo != 3} />
         </div>
         }
         {/* ZonaDuos Jugador Derecha */}
@@ -363,6 +364,7 @@ function App() {
           entradasRegistro={entradasRegistro}
           faseActual={faseActual}
           índiceActivo={índiceActivo}
+          modoEspectador={modoEspectador}
           setFaseActual={setFaseActual}
           estado={estado}
           onInicializarPartida={handleInicializarPartida}

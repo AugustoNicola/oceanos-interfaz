@@ -91,7 +91,10 @@ export default function Acciones({
       case "NADADOR_Y_TIBURÓN":
         // paso de elección de jugador a robar
         setFaseActual("ESPECIAL_NADADOR_Y_TIBURÓN_ELEGIR_JUGADOR");
-        const aux = [nombresJugadores[1], nombresJugadores[2], nombresJugadores[3]];
+        const aux = [];
+        nombresJugadores.forEach((nombre, índice) => {
+          if (índice != índiceActivo) {aux.push(nombre);}
+        });
         setJugadoresARobar(aux);
         break;
       default:
@@ -125,10 +128,11 @@ export default function Acciones({
   };
   
   const elegirJugadorParaDúoNadadorTiburón = (índiceElegido) => {
+    const índiceRealmenteElegido = índiceElegido + (índiceElegido >= índiceActivo)
     onJugarDúo({
       "acción_elegida": tipoDúoBackend["NADADOR_Y_TIBURÓN"],
       "cartas_jugadas": parDúo,
-      "jugador_elegido": índiceElegido
+      "jugador_elegido": índiceRealmenteElegido
     });
     // TODO: ver si puedo borrar estas cosas
     //setTipoDúo(null);
@@ -355,7 +359,7 @@ export default function Acciones({
           {jugadoresARobar.map((nombre, índice) => (
             <button
               key={índice}
-              onClick={() => {elegirJugadorParaDúoNadadorTiburón(índice + 1)}}
+              onClick={() => {elegirJugadorParaDúoNadadorTiburón(índice)}}
               className="w-full text-xl font-bold p-2 rounded-md bg-yellow-300 hover:bg-yellow-400 disabled:bg-yellow-100"
               
             >

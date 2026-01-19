@@ -7,6 +7,7 @@ export default function Registro({
   faseActual = "INICIAR_PARTIDA",
   setFaseActual,
   índiceActivo,
+  modoEspectador,
   estado = {},
   onInicializarPartida,
   onAvanzar,
@@ -31,7 +32,7 @@ export default function Registro({
   return (
     <div className="h-full pt-6 pr-2 overflow-y-scroll flex flex-col flex-nowrap gap-3 justify-start items-center">
       {entradasRegistro.map((entrada, índice) => (
-        <EntradaRegistro key={índice} data={entrada} nombresJugadores={nombresJugadores}/>
+        <EntradaRegistro key={índice} data={entrada} nombresJugadores={nombresJugadores} índiceActivo={índiceActivo} modoEspectador={modoEspectador} />
       ))}
       
       <Acciones
