@@ -9,7 +9,7 @@ import { llamarBackend } from './api/backend';
 import Registro from './components/Registro/Registro';
 
 function App() {
-  let nombresJugadores = ["Rojo", "Verde", "Azul", "Violeta"]
+  let nombresJugadores = ["Rojo", "Verde", "Azul"];
   let estadoInicial = {
     mazo: [],
     descarte: [
@@ -37,54 +37,54 @@ function App() {
     puntajes: [0,0,0,0],
     deQuienEsTurno: 0
   }
-  let estadoInicialPoblado = {
-    mazo: [{tipo: "SIRENA", color: "BLANCO"}],
-    descarte: [
-      [{tipo: "CANGREJO", color: "AMARILLO"}],
-      [{tipo: "PINGUINO", color: "VIOLETA"}]
-    ],
-    estadosDeJugadores: [
-      {
-        mano: [
-          {tipo: "SIRENA", color:"BLANCO"},
-          {tipo: "BARCO", color:"NEGRO"},
-          {tipo: "PEZ", color:"AZUL"}
-        ],
-        duos: [
-          [{tipo: "BARCO", color: "AZUL"}, {tipo: "BARCO", color: "CELESTE"}]
-        ]
-      },
-      {
-        mano: [
-        ],
-        duos: [
-          [{tipo: "PEZ", color: "AZUL"}, {tipo: "PEZ", color: "NEGRO"}],
-          [{tipo: "BARCO", color: "CELESTE"}, {tipo: "BARCO", color: "CELESTE"}]
-        ]
-      },
-      {
-        mano: [
-        {tipo: "PEZ", color:"VERDE"}
-        ],
-        duos: [
-        ]
-      },
-      {
-        mano: [
-        {tipo: "CONCHA", color:"GRIS"},
-        {tipo: "ANCLA", color:"NARANJA"},
-        {tipo: "SIRENA", color:"BLANCO"},
-        {tipo: "PEZ", color:"NEGRO"}
-        ],
-        duos: [
-        ]
-      }
-    ],
-    puntajes: [
-      12, 4, 2, 7
-    ],
-    deQuienEsTurno: 0
-  }
+  //let estadoInicialPoblado = {
+  //  mazo: [{tipo: "SIRENA", color: "BLANCO"}],
+  //  descarte: [
+  //    [{tipo: "CANGREJO", color: "AMARILLO"}],
+  //    [{tipo: "PINGUINO", color: "VIOLETA"}]
+  //  ],
+  //  estadosDeJugadores: [
+  //    {
+  //      mano: [
+  //        {tipo: "SIRENA", color:"BLANCO"},
+  //        {tipo: "BARCO", color:"NEGRO"},
+  //        {tipo: "PEZ", color:"AZUL"}
+  //      ],
+  //      duos: [
+  //        [{tipo: "BARCO", color: "AZUL"}, {tipo: "BARCO", color: "CELESTE"}]
+  //      ]
+  //    },
+  //    {
+  //      mano: [
+  //      ],
+  //      duos: [
+  //        [{tipo: "PEZ", color: "AZUL"}, {tipo: "PEZ", color: "NEGRO"}],
+  //        [{tipo: "BARCO", color: "CELESTE"}, {tipo: "BARCO", color: "CELESTE"}]
+  //      ]
+  //    },
+  //    {
+  //      mano: [
+  //      {tipo: "PEZ", color:"VERDE"}
+  //      ],
+  //      duos: [
+  //      ]
+  //    },
+  //    {
+  //      mano: [
+  //      {tipo: "CONCHA", color:"GRIS"},
+  //      {tipo: "ANCLA", color:"NARANJA"},
+  //      {tipo: "SIRENA", color:"BLANCO"},
+  //      {tipo: "PEZ", color:"NEGRO"}
+  //      ],
+  //      duos: [
+  //      ]
+  //    }
+  //  ],
+  //  puntajes: [
+  //    12, 4, 2, 7
+  //  ],
+  //  deQuienEsTurno: 0
+  //}
   
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
@@ -93,7 +93,7 @@ function App() {
   const [faseActual, setFaseActual] = useState("INICIAR_PARTIDA");
   const [idPartida, setIdPartida] = useState(null);
   
-  const índiceActivo = 2;
+  const índiceActivo = 1;
   
   const handleInicializarPartida = async () => {
     setCargando(true);
@@ -101,7 +101,7 @@ function App() {
     
     try {
       const data = await llamarBackend("crear_partida", {
-        "jugadores": ["sirena_hater", "sirena_hater", "decisiones_cacheadas", "sirena_hater"],
+        "jugadores": ["sirena_hater", "decisiones_cacheadas", "puntosbot_mk2"],
         "posición_jugador_activo": índiceActivo
       });
       setEstado(data?.estado);
@@ -302,46 +302,53 @@ function App() {
           <Mazo cartas={estado.mazo} />
         </div>
         
-        {/* Mano Jugador 0 */}
+        {/* Mano Jugador Abajo */}
         <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] bg-red-400'>
           <Mano mano={estado.estadosDeJugadores[0].mano} />
         </div>
-        {/* ZonaDuos Jugador 0 */}
+        {/* ZonaDuos Jugador Abajo */}
         <div className='absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[600px] bg-red-200'>
           <ZonaDuos duos={estado.estadosDeJugadores[0].duos} />
         </div>
         
         
         
-        {/* Mano Jugador 2 */}
+        {/* Mano Jugador Arriba */}
         <div className='absolute top-0 left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-400'>
-          <Mano mano={estado.estadosDeJugadores[2].mano} />
+          <Mano mano={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].mano} />
         </div>
-        {/* ZonaDuos Jugador 2 */}
+        {/* ZonaDuos Jugador Arriba */}
         <div className='absolute top-[18%] left-1/2 -translate-x-1/2 rotate-180 w-[600px] bg-blue-200'>
-          <ZonaDuos duos={estado.estadosDeJugadores[2].duos} />
+          <ZonaDuos duos={estado.estadosDeJugadores[estado.puntajes.length === 2 ? 1 : 2].duos} />
         </div>
         
         
-        {/* Mano Jugador 1 */}
+        {/* Mano Jugador Izquierda */}
+        { estado.puntajes.length > 2 &&
         <div className='absolute top-1/2 left-[-18%] -translate-y-1/2 rotate-90 w-[600px] bg-green-400'>
           <Mano mano={estado.estadosDeJugadores[1].mano} />
         </div>
-        {/* ZonaDuos Jugador 1 */}
+        }
+        
+        {/* ZonaDuos Jugador Izquierda */}
+        { estado.puntajes.length > 2 &&
         <div className='absolute top-1/2 left-[-5%] -translate-y-1/2 rotate-90 w-[600px] bg-green-200'>
           <ZonaDuos duos={estado.estadosDeJugadores[1].duos} />
         </div>
+        }
         
-        
-        {/* Mano Jugador 3 */}
+        {/* Mano Jugador Derecha */}
+        { estado.puntajes.length === 4 &&
         <div className='absolute top-1/2 left-[70%] -translate-y-1/2 -rotate-90 w-[600px] bg-purple-400'>
           <Mano mano={estado.estadosDeJugadores[3].mano} />
         </div>
-        {/* ZonaDuos Jugador 3 */}
+        }
+        {/* ZonaDuos Jugador Derecha */}
+        { estado.puntajes.length === 4 &&
         <div className='absolute top-1/2 left-[57%] -translate-y-1/2 -rotate-90 w-[600px] bg-purple-200'>
           <ZonaDuos duos={estado.estadosDeJugadores[3].duos} />
         </div>
-        
+        }
         
       </div>
       {/* Sideboard */}

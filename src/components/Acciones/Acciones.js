@@ -157,7 +157,7 @@ export default function Acciones({
       }
       
       {/* Avanzar (OK) */}
-      { estado != {} && estado.deQuienEsTurno !== índiceActivo && faseActual !== "RONDA_TERMINADA" && faseActual !== "INICIAR_PARTIDA" &&
+      { estado != {} && estado.deQuienEsTurno !== índiceActivo && faseActual !== "RONDA_TERMINADA" && faseActual !== "INICIAR_PARTIDA" && faseActual !== "PARTIDA_TERMINADA" &&
       <button className="w-full text-xl font-bold py-2 rounded-md bg-gray-300 hover:bg-gray-400"
         onClick={onAvanzar} disabled={cargando}>
         {cargando ? "Cargando..." : "Avanzar"}

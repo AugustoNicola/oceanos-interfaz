@@ -13,15 +13,14 @@ export default function EntradaRegistro({
 }) {
   
   const coloresEntradaJugadores = [
-    "bg-red-200",
-    "bg-green-200",
-    "bg-blue-200",
-    "bg-purple-200",
-  ]
+    ["bg-red-200", "bg-blue-200"],
+    ["bg-red-200", "bg-green-200", "bg-blue-200"],
+    ["bg-red-200", "bg-green-200", "bg-blue-200", "bg-purple-200"]
+  ];
   
   let textoEntrada = nombresJugadores[data["jugador"]];
   let colorEntrada = "bg-gray-300";
-  if (data["jugador"] !== undefined) { colorEntrada = coloresEntradaJugadores[data["jugador"]]; }
+  if (data["jugador"] !== undefined) { colorEntrada = coloresEntradaJugadores[nombresJugadores.length - 2][data["jugador"]]; }
   let mostrarPuntajesRonda = false;
   
   switch (data["acción"]) {
