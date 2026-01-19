@@ -104,7 +104,7 @@ export default function Carta({
       style={{
         width: `${renderWidth}px`,
         height: `${renderHeight}px`,
-        backgroundImage: `url("/cartas.png")`,
+        backgroundImage: `url("${process.env.PUBLIC_URL}/cartas.png")`,
         backgroundRepeat: "no-repeat",
         // Scale entire sprite
         backgroundSize: `${SPRITE_WIDTH * scale}px ${SPRITE_HEIGHT * scale}px`,

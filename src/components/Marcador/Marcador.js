@@ -16,7 +16,7 @@ export default function Marcador({
     <div className="mb-3">
       { nombresJugadores.length == 0 &&
       <div>
-      <img className="m-auto w-[60%]" src="/cover.png" />
+      <img className="m-auto w-[60%]" src={`${process.env.PUBLIC_URL}/cover.png`} />
       </div>
       }
       
