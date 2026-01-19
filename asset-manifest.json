@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/oceanos-interfaz/static/css/main.0234c26f.css",
-    "main.js": "/oceanos-interfaz/static/js/main.1d2d52aa.js",
+    "main.js": "/oceanos-interfaz/static/js/main.c64b495c.js",
     "index.html": "/oceanos-interfaz/index.html",
     "main.0234c26f.css.map": "/oceanos-interfaz/static/css/main.0234c26f.css.map",
-    "main.1d2d52aa.js.map": "/oceanos-interfaz/static/js/main.1d2d52aa.js.map"
+    "main.c64b495c.js.map": "/oceanos-interfaz/static/js/main.c64b495c.js.map"
   },
   "entrypoints": [
     "static/css/main.0234c26f.css",
-    "static/js/main.1d2d52aa.js"
+    "static/js/main.c64b495c.js"
   ]
 }
