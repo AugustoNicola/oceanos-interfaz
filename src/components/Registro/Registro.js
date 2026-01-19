@@ -20,6 +20,7 @@ export default function Registro({
   onDecirÚltimaChance,
   cargando,
   error,
+  setError,
   nombresJugadores
 }) {
   
@@ -51,10 +52,14 @@ export default function Registro({
         onDecirBasta={onDecirBasta}
         onDecirÚltimaChance={onDecirÚltimaChance}
         cargando={cargando}
-        error={error}
+        setError={setError}
       />
       
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      { error &&
+      <div className="w-full text-lg py-2 px-2 rounded-md bg-red-700 text-white font-bold">
+        <p>{error}</p>
+      </div>
+      }
       
       <div ref={bottomRef} />
     </div>

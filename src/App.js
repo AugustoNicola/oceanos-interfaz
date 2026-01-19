@@ -382,6 +382,7 @@ function App() {
           onDecirÚltimaChance={handleDecirÚltimaChance}
           cargando={cargando}
           error={error}
+          setError={setError}
           nombresJugadores={nombresJugadores}
         />
       </div>

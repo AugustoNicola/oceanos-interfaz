@@ -16,7 +16,7 @@ export default function Acciones({
   onDecirBasta,
   onDecirÚltimaChance,
   cargando,
-  error
+  setError
 }) {
   
   const [cartaRoboElegida, setCartaRoboElegida] = useState(null);
@@ -42,9 +42,10 @@ export default function Acciones({
   ];
   
   useEffect(() => {
-    fetch("http://localhost:8000/jugadores")
+    fetch("http://localhost:8321/jugadores")
       .then(res => res.json())
-      .then(data => setPerfilesDisponibles(data.jugadores));
+      .then(data => setPerfilesDisponibles(data.jugadores))
+      .catch(e => setError("Servidor de juego no encontrado. ¡Prendelo localmente en localhost:8321 y recargá la página!"));
   }, []);
 
   useEffect(() => {
