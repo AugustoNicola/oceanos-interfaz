@@ -14,6 +14,14 @@ export default function Marcador({
   
   return (
     <div className="mb-3">
+      { nombresJugadores.length == 0 &&
+      <div>
+      <img className="m-auto w-[60%]" src="/cover.png" />
+      </div>
+      }
+      
+      { nombresJugadores.length > 0 &&
+      <div>
       {
         nombresJugadores.map( (nombre, indiceJugador) => (
           <div key={indiceJugador} className="flex flex-row justify-between text-3xl font-bold" >
@@ -21,6 +29,8 @@ export default function Marcador({
             <p className={COLORES_JUGADORES[puntajes.length - 2][indiceJugador]}>{puntajes[indiceJugador]}/{PUNTAJE_PARA_GANAR[puntajes.length - 2]}</p>
           </div>
         ))
+      }
+      </div>
       }
     </div>
   );

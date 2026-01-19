@@ -360,12 +360,10 @@ function App() {
       {/* Sideboard */}
       <div className="bg-gray-200 basis-4/12 w-full h-full px-5 py-3 flex flex-col flex-1">
         {/* Marcador */}
-        {nombresJugadores.length > 0 &&
         <Marcador
           nombresJugadores={nombresJugadores}
           puntajes={estado.puntajes}
         />
-        }
         {/* Registro */}
         <Registro
           entradasRegistro={entradasRegistro}
